@@ -104,7 +104,7 @@ var yasuo = [
     {
         id: 1,
         name: 'mặc định',
-        price: 99
+        price: 100
     },
     {
         id:2,
@@ -114,13 +114,18 @@ var yasuo = [
     {
         id:3,
         name:'siêu phẩm',
-        price: 150
+        price: 100
     },
     {
         id:4,
         name:'tối thượng',
-        price:99
-    }
+        price:100
+    },
+    {
+        id:5,
+        name:'ma kiếm',
+        price: 100
+    },
 
 ]
 console.log(yasuo)
@@ -148,5 +153,34 @@ console.log(checkPrice)
 // ==> hàm some() dừng lại khi gặp 1 phần tử đúng
 console.log('----find()----');
 var search = yasuo.find(function(skin,index){
-    
+    return skin.name==='ma kiếm';
 })
+console.log(search)
+// hàm find() là hàm tìm kiếm nó sẽ duyệt tất cả phần tử trong mảng đến khi có 1 phần tử thỏa mãn điều kiện thì sẽ dừng và trả về giá trị của phần tử đó
+// Nếu hàm find() không tìm thấy giá trị thỏa mãn nó sẽ trả về undefined
+// hàm find() chỉ trả về 1 phần tử là phẩn tử đầu tiên nó tìm thấy
+console.log('----filter()----');
+var search = yasuo.filter(function(skin,index){
+    return skin.name==='ma kiếm';
+})
+console.log(search)
+// hàm filter trả về tất cả phần tử mà nó tìm thấy
+console.log('----map()----');
+var newYasuo = yasuo.map(function(skin,index){
+    return {
+        id: skin.id,
+        name: `Trang phục: Yasuo ${skin.name}`,
+        price: `${skin.price}\$`,
+    }
+});
+console.log(newYasuo.find(function(skin,index){
+    return skin.id===2;
+}))
+console.log('----reduce()----');
+function TinhTong(sum,yasuoValue){
+    return sum+=yasuoValue.price;
+}
+var sumPrice = yasuo.reduce(TinhTong,0)
+console.log(sumPrice)
+
+
