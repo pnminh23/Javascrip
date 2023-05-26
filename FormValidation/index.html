@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form action="" id="form-1">
+        <h3>Thành viên đăng kí</h3>
+        <p>Cùng nhau học lập trình miễn phí tại F8</p>
+        <div class="form-group">
+            <label for="fullname" class="form-label">Tên đầy dủ</label>
+            <input type="text" name="fullname" id="fullname" placeholder="VD: Nhật Minh">
+            <span class="form-message"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" placeholder="VD: pnm123@gmail.com">
+            <span class="form-message"></span>
+
+        </div>
+        <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input type="text" name="password" id="password" >
+            <span class="form-message"></span>
+
+        </div>
+        <div class="form-group">
+            <label for="forgot-password">Nhập lại mật khẩu</label>
+            <input type="text" name="forgot-password" id="forgot-password" >
+            <span class="form-message"></span>
+
+        </div>
+        <button class="form-submit">Đăng kí</button>
+    </form>
+    <script src="main.js"></script>
+    <script>
+        Validator({
+            form: '#form-1',
+            rules: [
+                Validator.isRequired('#fullname'),
+                Validator.isEmail('#email'),
+                Validator.isPassword('#password'),
+                Validator.isForgotPassword('#forgot-password')
+
+            ]
+        });
+    </script>
+</body>
+</html>
