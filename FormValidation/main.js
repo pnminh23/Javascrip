@@ -1,47 +1,68 @@
 function Validator(option){
+    var selectorRules = {};
     function validate(inputElement,rule){
-        // gọi 1 hàm riêng để check lỗi
         var erroElement = inputElement.parentElement.querySelector('.form-message');
-        // muốn gọi được thẻ span thì phải gọi đến cha của thẻ input rồi mới gọi tiếp đến nó
-        var erroMessage = rule.check(inputElement.value)
-        // lấy ra thông báo lỗi khi thực hiện sự kiện
-        // value: inputElement.value
-        // text: rule.check()
+        var erroElement = inputElement.parentElement.querySelector('.form-message');
+        var erroMessage ;
+        var rules = selectorRules[rule.selector];
+        for(var i =0; i<rules.length ;++i){
+            erroMessage = rules[i](inputElement.value)
+            if(erroMessage) break;
+        }
         if(erroMessage){
             erroElement.innerText = erroMessage;
-            // thêm text cho thẻ span
             erroElement.parentElement.classList.add('Error');
-            // thêm class Erro cho thẻ cha là thẻ form-group 
-            
         }
         else{
-            // nếu ko có thông báo lỗi thì trả về nguyên như ban đầu
             erroElement.innerText = '';
             erroElement.parentElement.classList.remove('Error');
-
         }
+        return !erroMessage;
     }
     var formElement = document.querySelector(option.form);
-    //gọi đến thẻ form trong HTML
     if (formElement){
-        // nếu có thẻ form sẽ chạy tiếp
+        formElement.onsubmit = function(e){
+            e.preventDefault();
+            // sửa lỗi khi submit form
+            var formValid = true; 
+            option.rules.forEach(function(rule){
+                var inputElement = formElement.querySelector(rule.selector)
+                var isValid = validate(inputElement,rule)
+                if(!isValid){
+                    formValid = false;
+                }
+                
+            });
+            if(formValid){
+                window.alert('Đăng kí thành công')
+
+                
+            }else{
+                window.alert('Vui lòng nhập tất cả thông tin')
+            }
+        }
         option.rules.forEach(function(rule){
-        // gọi đến key rules của đối tượng Validator và duyệt từng phần tử trong mảng mỗi phần tử khi duyệt đến là rule
+            if(Array.isArray(selectorRules[rule.selector])){
+                selectorRules[rule.selector].push(rule.check);
+            }else{
+                selectorRules[rule.selector] = [rule.check];
+            }
             var inputElement = formElement.querySelector(rule.selector)
-            // gọi đến ô input có id là selector
            
             if(inputElement){
                 inputElement.onblur = function(){
-                // thực hiện sự kiện blur: khi người dùng chọn vào input xong ấn ra ngoài thì được coi là 1 lần thực hiện sự kiện
                     validate(inputElement,rule)
-                    // gọi hàm validate với tham số truyền vào là thẻ input thao tác bỏi sự kiện Blur và phần tử rule tương ứng với input đang chọn
-                    
-
+                }
+                inputElement.oninput =  function(){
+                    var erroElement = inputElement.parentElement.querySelector('.form-message');
+                    erroElement.innerText = '';
+                    erroElement.parentElement.classList.remove('Error');
                 }
             }
         });
     }
-    
+
+
 }
 // Định nghĩa rules
 Validator.isRequired = function(selector){
@@ -55,24 +76,26 @@ Validator.isRequired = function(selector){
 Validator.isEmail = function(selector){
     return{
         selector:selector,
-        check: function(){
-            
+        check: function(value){
+            var filter = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            return filter.test(value) ? undefined : "Vui lòng nhập đúng định dạng email";
         }
     };
 };
-Validator.isPassword = function(selector){
+Validator.isPassword = function(selector,min){
     return{
         selector:selector,
-        check: function(){
-            
+        check: function(value){
+            return value.length>=min ? undefined : `Nhập mật khẩu ít nhất ${min} kí tự`
         }
     };
 };
-Validator.isForgotPassword = function(selector){
+Validator.isForgotPassword = function(selector,password){
     return{
         selector:selector,
-        check: function(){
-            
+        check: function(value){
+            console.log(password())
+          return value == password() ? undefined : 'Mật khẩu nhập lại chưa khớp'
         }
     };
 }
